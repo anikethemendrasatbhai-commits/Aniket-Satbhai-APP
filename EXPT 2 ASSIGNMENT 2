@@ -1,0 +1,37 @@
+def report_format(func):
+    def wrapper(*args, **kwargs):
+        print("=" * 40)
+        result = func(*args, **kwargs)
+        print("=" * 40)
+        return result
+    return wrapper
+
+
+class Report:
+    def __init__(self, title, content):
+        self.title = title
+        self.content = content
+
+    @classmethod
+    def create_template(cls, title):
+        return cls(title, "No Content Available")
+
+    @report_format
+    def display(self):
+        print("REPORT TITLE :", self.title)
+        print("REPORT CONTENT :", self.content)
+
+    def __str__(self):
+        return f"Report('{self.title}')"
+
+
+r1 = Report(
+    "Student Report",
+    "Total Students: 120\n Pass Percentage: 95%"
+)
+
+r1.display()
+print(r1)
+
+r2 = Report.create_template("Sales Report")
+r2.display()
