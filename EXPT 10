@@ -1,0 +1,7 @@
+import numpy as np
+
+# Create a one-dimensional NumPy array
+arr = np.arange(1, 11)
+
+print("One-dimensional NumPy array:")
+print(arr)
