@@ -1,0 +1,25 @@
+```python
+import re
+
+def find_emails(text):
+    pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    return re.findall(pattern, text)
+
+
+if __name__ == "__main__":
+    text = """Contact us at support@mitadt.edu.in or admin@example.com.
+    You can also reach aniket.satbhai@gmail.com, hr_team@company.co.uk
+    and sales+offers@shop-online.org for more details.
+    Invalid ones like user@gmail, @nouser.com or plainaddress are ignored."""
+
+    emails = find_emails(text)
+
+    print("Input text:")
+    print(text)
+
+    print("\nList of email addresses extracted:")
+    for e in emails:
+        print(e)
+
+    print("\nTotal emails found:", len(emails))
+```
