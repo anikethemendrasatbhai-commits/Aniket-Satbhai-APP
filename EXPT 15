@@ -1,0 +1,32 @@
+import gc
+import os
+import psutil
+
+class Node:
+    def __init__(self):
+        self.ref = None
+
+def create_objects():
+    # circular references -> only the cyclic garbage collector can free these
+    for _ in range(200000):
+        a, b = Node(), Node()
+        a.ref, b.ref = b, a
+
+def memory_usage(label):
+    mem = psutil.Process(os.getpid()).memory_info().rss / (1024 * 1024)
+    print(f"{label}: {mem:.2f} MB")
+
+gc.disable()
+memory_usage("Initial memory usage")
+
+create_objects()
+memory_usage("Memory after creating objects")
+
+gc.set_debug(gc.DEBUG_STATS)
+collected = gc.collect()
+gc.set_debug(0)
+
+print("Unreachable objects collected:", collected)
+memory_usage("Memory after garbage collection")
+
+gc.enable()
