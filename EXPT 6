@@ -1,40 +1,54 @@
-def lcs(X, Y):
-    m = len(X)
-    n = len(Y)
+```python
+def knapsack_bottom_up(values, weights, W):
+    n = len(values)
+    dp = [[0 for _ in range(W + 1)] for _ in range(n + 1)]
 
-    table = [[0] * (n + 1) for _ in range(m + 1)]
-
-    for i in range(m + 1):
-        for j in range(n + 1):
-            if i == 0 or j == 0:
-                table[i][j] = 0
-            elif X[i - 1] == Y[j - 1]:
-                table[i][j] = table[i - 1][j - 1] + 1
+    for i in range(1, n + 1):
+        for w in range(W + 1):
+            if weights[i - 1] <= w:
+                dp[i][w] = max(
+                    dp[i - 1][w],
+                    dp[i - 1][w - weights[i - 1]] + values[i - 1]
+                )
             else:
-                table[i][j] = max(table[i - 1][j], table[i][j - 1])
+                dp[i][w] = dp[i - 1][w]
 
-    index = table[m][n]
-    result = [""] * index
+    return dp[n][W]
 
-    i, j = m, n
 
-    while i > 0 and j > 0:
-        if X[i - 1] == Y[j - 1]:
-            result[index - 1] = X[i - 1]
-            i -= 1
-            j -= 1
-            index -= 1
-        elif table[i - 1][j] > table[i][j - 1]:
-            i -= 1
+def knapsack_top_down(values, weights, W):
+    n = len(values)
+    memo = {}
+
+    def solve(i, w):
+        if i == 0 or w == 0:
+            return 0
+
+        if (i, w) in memo:
+            return memo[(i, w)]
+
+        if weights[i - 1] <= w:
+            memo[(i, w)] = max(
+                solve(i - 1, w),
+                values[i - 1] + solve(i - 1, w - weights[i - 1])
+            )
         else:
-            j -= 1
+            memo[(i, w)] = solve(i - 1, w)
 
-    return "".join(result)
+        return memo[(i, w)]
+
+    return solve(n, W)
 
 
-# Example usage
-X = "AGGTAB"
-Y = "GXTXAYB"
+if __name__ == "__main__":
+    tests = [
+        ([60, 100, 120], [10, 20, 30], 50),
+        ([1, 2, 3], [4, 5, 1], 4),
+        ([1, 2, 3], [4, 5, 6], 3)
+    ]
 
-print("LCS:", lcs(X, Y))
-print("Length of LCS:", len(lcs(X, Y)))
+    for values, weights, W in tests:
+        print(f"Values = {values}, Weights = {weights}, Capacity = {W}")
+        print(" Bottom-Up Maximum Value :", knapsack_bottom_up(values, weights, W))
+        print(" Top-Down Maximum Value :", knapsack_top_down(values, weights, W))
+```
