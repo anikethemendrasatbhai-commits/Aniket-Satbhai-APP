@@ -1,20 +1,22 @@
-```python
-import re
+import csv
+import json
 
-text = """
-Hello,
+def csv_to_json(csvFilePath, jsonFilePath):
+    jsonArray = []
 
-Please contact us at python@example.com
+    with open(csvFilePath, encoding='utf-8') as csvf:
+        csvReader = csv.DictReader(csvf)
 
-or advanced@company.org.
+        for row in csvReader:
+            jsonArray.append(row)
 
-"""
+    with open(jsonFilePath, 'w', encoding='utf-8') as jsonf:
+        jsonString = json.dumps(jsonArray, indent=4)
+        jsonf.write(jsonString)
 
-pattern = r'[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+'
 
-emails = re.findall(pattern, text)
+csvFilePath = 'data.csv'
+jsonFilePath = 'data.json'
 
-print("email addresses found:")
-
-print(emails)
+csv_to_json(csvFilePath, jsonFilePath)
 ```
